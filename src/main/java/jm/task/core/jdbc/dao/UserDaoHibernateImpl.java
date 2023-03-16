@@ -6,7 +6,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ public class UserDaoHibernateImpl implements UserDao {
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS users (id BIGINT PRIMARY KEY AUTO_INCREMENT, "
             + "name VARCHAR(255), last_name VARCHAR(255), age int)";
-    private static final String ADD_USER = "INSERT INTO users (name, last_name, age) Values (?, ?, ?)";
     private static final String DELETE_TABLE = "DROP TABLE IF EXISTS users";
     private static final String DELETE_USERS_BY_ID = "DELETE FROM users WHERE id = ?";
     private static final String CLEAN_TABLE = "TRUNCATE TABLE users";
@@ -62,6 +60,7 @@ public class UserDaoHibernateImpl implements UserDao {
             System.out.println("User с именем – " + name + " добавлен в базу данных ");
             session.getTransaction().commit();
         } catch (Exception e) {
+            sessionFactory.getCurrentSession().getTransaction().rollback();
             e.printStackTrace();
         }
 
@@ -77,6 +76,7 @@ public class UserDaoHibernateImpl implements UserDao {
             query.executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
+            sessionFactory.getCurrentSession().getTransaction().rollback();
             e.printStackTrace();
         }
 
@@ -90,6 +90,7 @@ public class UserDaoHibernateImpl implements UserDao {
             listUser = (List<User>) session.createQuery("From " + User.class.getSimpleName().toString()).list();
             session.getTransaction().commit();
         } catch (Exception e) {
+            sessionFactory.getCurrentSession().getTransaction().rollback();
             e.printStackTrace();
         }
 
@@ -105,6 +106,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
+            sessionFactory.getCurrentSession().getTransaction().rollback();
             e.printStackTrace();
         }
 
